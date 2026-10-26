@@ -1,0 +1,582 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portfolio | Video Editor & Content Creator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050505; --bg2:#0d0b0b; --line:#2a1f1f;
+  --text:#f3ecec; --muted:#9a8f8f;
+  --accent:#ff5a5f; --accent2:#ff8a5c;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:"Be Vietnam Pro",system-ui,sans-serif;overflow-x:hidden;line-height:1.6}
+body.locked{overflow:hidden}
+a{color:inherit;text-decoration:none}
+.mono{font-family:"JetBrains Mono",monospace}
+
+/* ---------- Quả cầu sáng nền ---------- */
+.orb{position:fixed;border-radius:50%;filter:blur(90px);pointer-events:none;z-index:0;opacity:.55}
+.orb.o1{width:420px;height:420px;background:radial-gradient(circle,#ff5a5f,transparent 70%);top:-120px;left:-140px;animation:float1 14s ease-in-out infinite}
+.orb.o2{width:380px;height:380px;background:radial-gradient(circle,#ff8a5c,transparent 70%);top:40%;right:-160px;animation:float2 18s ease-in-out infinite}
+.orb.o3{width:460px;height:460px;background:radial-gradient(circle,#7a1f2b,transparent 70%);bottom:-200px;left:30%;animation:float1 20s ease-in-out infinite reverse}
+@keyframes float1{50%{transform:translate(80px,60px)}}
+@keyframes float2{50%{transform:translate(-70px,-90px)}}
+
+/* ---------- Màn loading ---------- */
+#loader{position:fixed;inset:0;z-index:100;background:radial-gradient(ellipse at center,#2a0a0c 0%,#000 60%);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s ease,visibility .6s}
+#loader.hide{opacity:0;visibility:hidden}
+.marquee{position:absolute;top:50%;left:0;width:100%;transform:translateY(-50%);overflow:hidden;white-space:nowrap}
+.marquee-track{display:inline-block;animation:marq 22s linear infinite;font-weight:800;font-size:clamp(40px,7vw,90px);color:#ffe3e3;letter-spacing:-.01em}
+.marquee-track span.dot{color:var(--accent);margin:0 .5em;font-size:.5em;vertical-align:middle}
+@keyframes marq{to{transform:translateX(-50%)}}
+.pill{position:relative;z-index:2;min-width:200px;padding:16px 28px;border-radius:999px;background:#0b0b0b;border:1px solid #3a1416;box-shadow:0 0 0 1px rgba(255,90,95,.25),0 0 40px rgba(255,90,95,.25);display:flex;gap:20px;justify-content:center;align-items:center;font-size:13px;letter-spacing:.12em;cursor:default}
+.pill button{all:unset;cursor:pointer;letter-spacing:.14em}
+.lang{position:absolute;top:calc(50% + 70px);z-index:2;text-align:center;opacity:0;transition:opacity .5s}
+.lang.show{opacity:1}
+.lang p{font-size:11px;letter-spacing:.25em;color:var(--muted);margin-bottom:16px}
+.lang button{background:transparent;border:1px solid #5a1d20;color:var(--text);padding:10px 22px;border-radius:999px;margin:0 6px;cursor:pointer;font:inherit;font-size:14px}
+.lang button small{color:var(--accent);margin-left:10px;font-size:10px}
+.lang button:hover{background:#1a0a0b;border-color:var(--accent)}
+.brand-tag{position:fixed;top:22px;left:24px;font-size:12px;z-index:3}
+.brand-tag::after{content:"";display:inline-block;width:1px;height:12px;background:var(--accent);margin-left:2px;animation:blink 1s step-end infinite;vertical-align:middle}
+@keyframes blink{50%{opacity:0}}
+
+/* ---------- Header ---------- */
+header{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:18px 28px;background:linear-gradient(#050505ee,#05050500)}
+header .logo{font-size:12px}
+header .center{font-size:13px;letter-spacing:.1em;position:absolute;left:50%;transform:translateX(-50%)}
+header nav{display:flex;gap:18px;font-size:11px;letter-spacing:.1em;font-weight:500}
+header nav a:hover{color:var(--accent)}
+header nav .lg{cursor:pointer;color:var(--muted)}
+header nav .lg.on{color:var(--accent)}
+.socials{position:fixed;left:18px;bottom:28px;z-index:50;display:flex;flex-direction:column;gap:22px}
+.socials a{width:22px;height:22px;display:block;opacity:.8}
+.socials a:hover{opacity:1;color:var(--accent)}
+
+main{position:relative;z-index:1}
+section{padding:120px 8vw;position:relative}
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .9s ease,transform .9s ease}
+.reveal.in{opacity:1;transform:none}
+.h-sec{font-weight:900;font-size:clamp(44px,7vw,96px);line-height:.95;text-transform:uppercase;letter-spacing:-.02em}
+.h-sec em{font-style:normal;color:var(--accent)}
+
+/* ---------- Hero ---------- */
+#hero{min-height:100vh;display:flex;flex-direction:column;justify-content:space-between;padding-top:110px}
+.hello{color:var(--accent);font-size:clamp(14px,1.5vw,18px);letter-spacing:.08em}
+.name{font-size:clamp(28px,3.4vw,44px);font-weight:500;letter-spacing:.04em;margin-top:6px}
+.role-wrap{padding:0 0 10vh 10vw}
+.role-wrap .iam{color:var(--accent);font-size:18px}
+.role{font-size:clamp(40px,6.5vw,92px);font-weight:900;line-height:1;background:linear-gradient(180deg,#fff 30%,#ffb3a8 90%);-webkit-background-clip:text;background-clip:text;color:transparent;min-height:2.1em}
+.role .cursor{display:inline-block;width:.08em;height:.85em;background:var(--accent);vertical-align:baseline;animation:blink 1s step-end infinite}
+
+/* ---------- Về tôi ---------- */
+#about .grid{display:grid;grid-template-columns:1fr 1.3fr;gap:6vw;align-items:center}
+.avatar{aspect-ratio:3/4;border-radius:24px;overflow:hidden;background:linear-gradient(160deg,#2b0f12,#120708);border:1px solid var(--line);position:relative;box-shadow:0 30px 80px rgba(255,90,95,.15)}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.avatar .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;text-align:center;padding:20px}
+#about p.bio{font-size:clamp(16px,1.4vw,20px);color:#d9cfcf;margin-top:28px}
+.stats{display:flex;gap:40px;margin-top:40px;flex-wrap:wrap}
+.stats b{display:block;font-size:42px;font-weight:900;color:var(--accent);line-height:1}
+.stats span{font-size:12px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+
+/* ---------- Tôi làm gì ---------- */
+#services .grid{display:grid;grid-template-columns:1fr 1.4fr;gap:5vw;align-items:start}
+#services .h-sec{position:sticky;top:120px}
+.card{position:relative;padding:30px;margin-bottom:28px;border:1px dashed #3a2a2a;transition:border-color .3s}
+.card:hover{border-color:var(--accent)}
+.card::before,.card::after{content:"";position:absolute;width:14px;height:14px;border:2px solid #fff}
+.card::before{top:-2px;left:-2px;border-right:0;border-bottom:0}
+.card::after{bottom:-2px;right:-2px;border-left:0;border-top:0}
+.card h3{font-size:26px;font-weight:800;text-transform:uppercase}
+.card .sub{color:var(--accent);font-size:13px;margin-bottom:14px;opacity:.8}
+.card p{color:#cfc5c5;font-size:15px}
+.card .more{max-height:0;overflow:hidden;transition:max-height .5s ease}
+.card.open .more{max-height:400px}
+.card .toggle{position:absolute;right:16px;bottom:14px;width:26px;height:26px;border:1px solid #555;background:none;color:#fff;cursor:pointer;transition:transform .3s}
+.card.open .toggle{transform:rotate(180deg)}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.tags span{font-size:12px;padding:6px 12px;border-radius:999px;border:1px solid #4a2526;color:#ffd0cc}
+.tags-title{margin-top:20px;font-size:11px;letter-spacing:.15em;color:var(--muted);text-transform:uppercase}
+
+/* ---------- Kinh nghiệm ---------- */
+.tl-row{display:grid;grid-template-columns:1.2fr .6fr 1.6fr;gap:4vw;padding:34px 0;border-bottom:1px solid var(--line);align-items:center}
+.tl-row h4{font-size:22px;font-weight:600}
+.tl-row .co{color:var(--accent);font-size:14px}
+.tl-row .yr{font-size:clamp(30px,3.6vw,48px);font-weight:300;text-align:center}
+.tl-row .yr.now{color:var(--accent);font-size:clamp(18px,2vw,26px);font-weight:700;letter-spacing:.15em}
+.tl-row p{color:#bfb5b5;font-size:14px}
+
+/* ---------- Dự án ---------- */
+.work{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);margin-top:60px}
+.w{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:28px;display:flex;flex-direction:column;gap:22px;min-height:620px}
+.w:nth-child(3n){border-right:0}
+.w:nth-child(even){flex-direction:column-reverse;justify-content:flex-end}
+.w .meta{display:flex;justify-content:space-between;gap:12px}
+.w .num{font-size:30px;font-weight:300}
+.w .t{text-align:right;font-size:14px;font-weight:500}
+.w .t small{display:block;color:var(--muted);font-weight:400;font-size:12px}
+.w .hl{font-size:13px;color:var(--accent)}
+.w .hl small{display:block;color:var(--muted);font-size:12px}
+.phone{width:62%;aspect-ratio:9/16;margin:0 auto;border-radius:18px;overflow:hidden;border:2px solid var(--accent);box-shadow:0 0 40px rgba(255,90,95,.35);background:#140809;position:relative;cursor:pointer;transition:transform .4s}
+.phone:hover{transform:scale(1.04) rotate(-1deg)}
+.phone video,.phone img{width:100%;height:100%;object-fit:cover;display:block}
+.phone .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:var(--muted);font-size:12px;text-align:center;padding:12px}
+.phone .play{position:absolute;inset:auto 0 12px 0;text-align:center;font-size:11px;letter-spacing:.15em;opacity:0;transition:opacity .3s}
+.phone:hover .play{opacity:1}
+.cta{text-align:center;margin-top:80px}
+.cta h3{font-size:32px;font-weight:800}
+.cta p{color:var(--muted);margin:8px 0 22px}
+.btn{display:inline-block;padding:14px 30px;border-radius:999px;border:1px solid var(--accent);color:var(--text);transition:background .3s}
+.btn:hover{background:var(--accent)}
+
+/* ---------- Video ngang ---------- */
+.reel{display:flex;gap:22px;overflow-x:auto;padding:40px 0 20px;scroll-snap-type:x mandatory}
+.reel::-webkit-scrollbar{height:6px}.reel::-webkit-scrollbar-thumb{background:#3a1416;border-radius:6px}
+.reel .phone{flex:0 0 230px;width:230px;scroll-snap-align:start;margin:0}
+
+/* ---------- Video nền đầu trang ---------- */
+#hero{position:relative;overflow:hidden}
+.hero-vid{position:absolute;top:0;right:6vw;bottom:0;width:min(38vw,520px);z-index:-1;pointer-events:none}
+.hero-vid video{width:100%;height:100%;object-fit:cover;opacity:.75;
+  -webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 45%,#000 40%,transparent 100%);
+          mask-image:radial-gradient(ellipse 70% 60% at 50% 45%,#000 40%,transparent 100%)}
+
+/* ---------- Số liệu thật ---------- */
+.proof{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:30px;margin-top:40px;max-width:900px}
+.proof-item{display:flex;gap:22px;align-items:center;padding:18px;border:1px solid var(--line);border-radius:20px;background:#0c0808}
+.proof-item img{width:120px;aspect-ratio:9/19.5;object-fit:cover;object-position:top;border-radius:14px;border:1px solid #3a2626}
+.proof-item b{display:block;font-size:44px;font-weight:900;color:var(--accent);line-height:1}
+.proof-item span{color:var(--muted);font-size:13px}
+
+/* ---------- Sản phẩm đã review ---------- */
+.prod{position:relative;z-index:1;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:26px 0;overflow:hidden;white-space:nowrap}
+.prod-label{position:absolute;left:8vw;top:6px;font-size:10px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase}
+.prod-track{display:inline-block;animation:marq 30s linear infinite;font-size:clamp(22px,3vw,38px);font-weight:800;padding-top:10px}
+.prod-track i{color:var(--accent);font-style:normal;font-size:.4em;margin:0 1.2em;vertical-align:middle}
+
+/* ---------- Ảnh sự kiện ---------- */
+.gallery{columns:3 260px;column-gap:16px;margin-top:40px}
+.gallery img{width:100%;display:block;margin-bottom:16px;border-radius:16px;border:1px solid var(--line);break-inside:avoid;transition:transform .4s}
+.gallery img:hover{transform:scale(1.02)}
+
+/* ---------- Liên hệ ---------- */
+#contact{text-align:center;padding-bottom:60px}
+#contact .big{font-size:clamp(46px,9vw,140px);font-weight:900;line-height:1;text-transform:uppercase;background:linear-gradient(90deg,#fff,#ff8a7a);-webkit-background-clip:text;background-clip:text;color:transparent}
+.contact-list{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin-top:40px}
+.contact-list a{padding:14px 24px;border:1px solid #3a2626;border-radius:999px;font-size:14px}
+.contact-list a:hover{border-color:var(--accent);color:var(--accent)}
+footer{display:flex;justify-content:space-between;padding:30px 8vw;border-top:1px solid var(--line);font-size:12px;color:var(--muted);position:relative;z-index:1}
+
+/* ---------- Popup xem video ---------- */
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:200;display:none;align-items:center;justify-content:center}
+#modal.on{display:flex}
+#modal video{max-height:88vh;max-width:92vw;border-radius:16px;border:2px solid var(--accent)}
+#modal .x{position:absolute;top:20px;right:28px;font-size:30px;cursor:pointer;color:#fff;background:none;border:0}
+
+@media (max-width:900px){
+  header .center{display:none}
+  header{padding:16px 18px}
+  header .logo{display:none}
+  header nav{gap:14px;font-size:10px;white-space:nowrap;width:100%;justify-content:space-between}
+  .avatar{max-width:260px;margin:0 auto}
+  .hero-vid{right:0;width:100%}
+  .hero-vid video{opacity:.5}
+  #about .grid,#services .grid{grid-template-columns:1fr}
+  #services .h-sec{position:static}
+  .tl-row{grid-template-columns:1fr;gap:6px}
+  .tl-row .yr{text-align:left}
+  .work{grid-template-columns:1fr}
+  .w{border-right:0;min-height:auto}
+  .w:nth-child(even){flex-direction:column}
+  .phone{width:70%}
+  section{padding:90px 6vw}
+  .socials{display:none}
+}
+</style>
+</head>
+<body class="locked">
+
+<script>
+/* =====================================================================
+   BẢNG CẤU HÌNH — SỬA NỘI DUNG Ở ĐÂY, KHÔNG CẦN ĐỤNG VÀO PHẦN DƯỚI.
+   Mỗi chữ có 2 bản: vi (tiếng Việt) và en (tiếng Anh).
+   Ảnh/video: bỏ file vào thư mục assets/ rồi ghi đường dẫn, ví dụ "assets/video1.mp4".
+   Chỗ nào còn để trống "" thì trang tự hiện khung giữ chỗ.
+   ===================================================================== */
+const TIKTOK = "https://www.tiktok.com/@ngon.b.r05";
+const CONFIG = {
+  brandTag: "Riviu Ngon Bổ Rẻ",             // chữ nhỏ góc trái trên cùng
+  name:     { vi: "TUẤN KHÁNH", en: "TUAN KHANH" },
+  roles:    { vi: ["Content Creator", "Reviewer", "MMO", "Social Media"],
+              en: ["Content Creator", "Reviewer", "MMO", "Social Media"] },
+  marquee:  ["CONTENT CREATOR", "REVIEWER", "MMO", "SOCIAL MEDIA"],
+  heroVideo: "assets/khanh-intro.mp4",       // video chạy nền ở đầu trang ("" để tắt)
+  heroPoster: "assets/khanh-intro-poster.jpg",
+
+  avatar: "assets/avatar.jpg",
+  avatarPos: "38% 30%",                      // canh khung ảnh chân dung (ngang dọc)
+  bio: {
+    vi: "Mình là Tuấn Khánh, content creator full-time và là người đứng sau kênh Riviu Ngon - Bổ - Rẻ. Mình chuyên hợp tác phát triển, tư vấn mạng xã hội cho nhãn hàng, nhận setup và quay dựng video review. Các video của mình đã đạt hơn 100 triệu lượt xem trên nhiều nền tảng.",
+    en: "I'm Tuan Khanh, a full-time content creator and the person behind the Riviu Ngon - Bổ - Rẻ channel. I partner with brands on social media growth and consulting, and take on setup, filming and editing of review videos. My videos have reached over 100 million views across platforms."
+  },
+  stats: [
+    { num: { vi: "100Tr+", en: "100M+" }, vi: "View đa nền tảng",   en: "Cross-platform views" },
+    { num: "17,2K",  vi: "Follower TikTok",    en: "TikTok followers" },
+    { num: "952K",   vi: "Lượt thích",         en: "Likes" }
+  ],
+
+  services: [
+    { title: { vi: "Content Creator", en: "Content Creator" },
+      sub:   { vi: "Review sản phẩm & bán hàng", en: "Product reviews & sales" },
+      desc:  { vi: "Lên ý tưởng, kịch bản, quay và dựng video review ngắn cho TikTok, YouTube và Facebook, giúp sản phẩm ra đơn cho nhãn hàng.",
+               en: "Ideas, scripts, filming and editing of short review videos for TikTok, YouTube and Facebook that drive sales for brands." },
+      tags:  ["Kịch bản", "Quay sản phẩm", "Dựng video", "TikTok Shop", "Affiliate", "YouTube"] },
+    { title: { vi: "Social Media", en: "Social Media" },
+      sub:   { vi: "Tư vấn & setup kênh", en: "Consulting & channel setup" },
+      desc:  { vi: "Hợp tác phát triển và tư vấn mạng xã hội, setup quy trình quay dựng cho cá nhân và nhãn hàng.",
+               en: "Social media growth partnerships and consulting, plus filming and editing setup for individuals and brands." },
+      tags:  ["Tư vấn kênh", "Setup quay dựng", "Xây kênh", "Booking review", "MMO"] }
+  ],
+
+  // Kinh nghiệm: year = "NOW" sẽ hiện chữ HIỆN TẠI / PRESENT
+  experience: [
+    { role: { vi: "Content Creator & Reviewer", en: "Content Creator & Reviewer" }, company: "Kênh Riviu Ngon - Bổ - Rẻ", year: "NOW",
+      desc: { vi: "Hơn 3 năm sản xuất nội dung và video review, mang lại doanh thu cho các nhãn hàng. Video cao nhất đạt 35,5 triệu lượt xem.",
+              en: "3+ years producing review content that drives revenue for brands. Top video reached 35.5 million views." } },
+    { role: { vi: "Content Creator khách mời", en: "Guest Content Creator" }, company: "Sự kiện Ecovacs Robotics", year: "2025",
+      desc: { vi: "Tham dự sự kiện ra mắt sản phẩm của Ecovacs Robotics với vai trò content creator.",
+              en: "Attended Ecovacs Robotics' product launch event as a content creator." } },
+    { role: { vi: "Sản xuất & kinh doanh thời trang", en: "Fashion production & retail" }, company: "Đa nền tảng", year: { vi: "7+ năm", en: "7+ yrs" },
+      desc: { vi: "Hơn 7 năm sản xuất và kinh doanh thời trang trên nhiều nền tảng.",
+              en: "7+ years producing and selling fashion across multiple platforms." } }
+  ],
+
+  // Dự án nổi bật: video dọc 9:16. video = file mp4 trong assets/, link = mở TikTok/YouTube khi bấm
+  projects: [
+    { title: "FOCALSKIN — Miếng dán mụn", type: { vi: "Review / Affiliate", en: "Review / Affiliate" },
+      highlights: "35,5 triệu view · 165K tim", video: "", poster: "assets/thumb-focalskin.jpg", link: TIKTOK },
+    { title: "iPhone 18 Pro Max — Có đáng mua?", type: { vi: "Review công nghệ", en: "Tech review" },
+      highlights: "108K view", video: "", poster: "assets/thumb-iphone.jpg", link: TIKTOK },
+    { title: "Sự kiện Ecovacs Robotics", type: { vi: "Video sự kiện", en: "Event video" },
+      highlights: "Content creator khách mời", video: "", poster: "assets/thumb-hanh-trinh.jpg", link: TIKTOK },
+    { title: "XPENSE — Ghế công thái học", type: { vi: "Review / Affiliate", en: "Review / Affiliate" },
+      highlights: "Quay, dựng, review", video: "", poster: "assets/thumb-xpense.jpg", link: TIKTOK },
+    { title: "BEECUBE", type: { vi: "Review / Affiliate", en: "Review / Affiliate" },
+      highlights: "Quay, dựng, review", video: "", poster: "assets/thumb-beecube.jpg", link: TIKTOK },
+    { title: "GOGLET — Bình nước", type: { vi: "Review / Affiliate", en: "Review / Affiliate" },
+      highlights: "Quay, dựng, review", video: "", poster: "assets/thumb-goglet.jpg", link: TIKTOK }
+  ],
+  moreLink: TIKTOK,                          // link xem tất cả dự án
+
+  // Ảnh chụp số liệu thật (chứng minh kết quả cho nhãn hàng)
+  proof: [
+    { img: "assets/so-lieu-focalskin.jpg", num: "35,5Tr", vi: "lượt xem · FOCALSKIN", en: "views · FOCALSKIN" },
+    { img: "assets/so-lieu-iphone.jpg",    num: "108K",   vi: "lượt xem · iPhone 18 Pro Max", en: "views · iPhone 18 Pro Max" }
+  ],
+
+  // Sản phẩm đã review (chạy ngang)
+  products: ["FOCALSKIN", "IPHONE 18 PRO MAX", "ECOVACS DEEBOT", "XPENSE", "BEECUBE", "GOGLET", "K&F CONCEPT", "JISULIFE"],
+
+  // Ảnh sự kiện / hậu trường
+  gallery: [
+    "assets/su-kien-2.jpg", "assets/san-khau-2.jpg", "assets/su-kien-1.jpg", "assets/su-kien-3.jpg",
+    "assets/su-kien-4.jpg", "assets/san-khau-1.jpg", "assets/su-kien-5.jpg"
+  ],
+
+  contact: [                                 // xoá dòng nào không dùng
+    { label: "TikTok",   url: TIKTOK },
+    { label: "YouTube",  url: "https://youtube.com/@riviungonbore" },
+    { label: "Facebook", url: "https://www.facebook.com/share/1FPCuH4dtE/" },
+    { label: "Zalo",     url: "https://zalo.me/0977706650" },
+    { label: "riviungonbore@gmail.com", url: "mailto:riviungonbore@gmail.com" }
+  ],
+  cvFile: ""                                 // ví dụ "assets/CV.pdf" — để trống thì ẩn mục CV
+};
+
+/* Chữ cố định của giao diện (ít khi phải sửa) */
+const UI = {
+  vi: { loading:"ĐANG TẢI", choose:"CHỌN NGÔN NGỮ · CHOOSE LANGUAGE", start:"BẮT ĐẦU", hello:"Xin chào! Tôi là", iam:"Là một",
+        nav:["VỀ TÔI","DỰ ÁN","CV","LIÊN HỆ"], about:"Về <em>tôi</em>", services:"Tôi làm <em>gì</em>", tools:"Kỹ năng & công cụ",
+        exp:"Hành trình &<br><em>kinh nghiệm</em>", now:"HIỆN TẠI", work:"Dự án <em>nổi bật</em>", hl:"Vai trò", watch:"XEM VIDEO",
+        more:"Muốn xem thêm?", moreSub:"Xem tất cả video trên kênh TikTok", moreBtn:"Xem kênh TikTok →", reel:"Sự kiện & <em>hậu trường</em>",
+        reelSub:"Một vài khoảnh khắc khi đi làm nội dung", proof:"Kết quả <em>thật</em>", proofSub:"Ảnh chụp số liệu từ TikTok Studio",
+        products:"Sản phẩm đã review", contactBig:"Liên hệ", contactSub:"Hợp tác review, booking hoặc tư vấn kênh — nhắn mình nhé.",
+        noMedia:"Chưa có video<br>bỏ file vào assets/", noAvatar:"Ảnh chân dung<br>assets/avatar.jpg" },
+  en: { loading:"LOADING", choose:"CHỌN NGÔN NGỮ · CHOOSE LANGUAGE", start:"START", hello:"Hello! I'm", iam:"I'm a",
+        nav:["ABOUT","WORK","CV","CONTACT"], about:"About <em>me</em>", services:"What I <em>do</em>", tools:"Skills & tools",
+        exp:"Journey &<br><em>experience</em>", now:"PRESENT", work:"My <em>work</em>", hl:"Highlights", watch:"WATCH VIDEO",
+        more:"Want to see more?", moreSub:"Watch all my videos on TikTok", moreBtn:"Visit my TikTok →", reel:"Events & <em>behind the scenes</em>",
+        reelSub:"A few moments from the field", proof:"Real <em>results</em>", proofSub:"Screenshots from TikTok Studio",
+        products:"Products reviewed", contactBig:"Contact me", contactSub:"Reviews, bookings or channel consulting — drop me a message.",
+        noMedia:"No video yet<br>add a file to assets/", noAvatar:"Portrait photo<br>assets/avatar.jpg" }
+};
+</script>
+
+<div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+
+<!-- Màn loading -->
+<div id="loader">
+  <div class="brand-tag mono" id="tagTyping"></div>
+  <div class="marquee"><div class="marquee-track" id="marq"></div></div>
+  <div class="pill" id="pill"><span id="ldTxt">LOADING</span><span class="mono" id="pct" style="color:var(--muted)">0%</span></div>
+  <div class="lang" id="langBox">
+    <p>CHỌN NGÔN NGỮ · CHOOSE LANGUAGE</p>
+    <button data-l="vi">Tiếng Việt<small>VI</small></button>
+    <button data-l="en">English<small>EN</small></button>
+  </div>
+</div>
+
+<header>
+  <a href="#hero" class="logo mono" id="hdTag"></a>
+  <div class="center">PORTFOLIO</div>
+  <nav>
+    <a href="#about" data-i="0"></a><a href="#work" data-i="1"></a><a href="#" id="cvLink" data-i="2"></a><a href="#contact" data-i="3"></a>
+    <span><span class="lg" data-l="vi">VI</span> / <span class="lg" data-l="en">EN</span></span>
+  </nav>
+</header>
+<div class="socials" id="socials"></div>
+
+<main>
+  <section id="hero">
+    <div class="hero-vid" id="heroVid"></div>
+    <div>
+      <div class="hello" id="hello"></div>
+      <div class="name" id="name"></div>
+    </div>
+    <div class="role-wrap">
+      <div class="iam" id="iam"></div>
+      <div class="role"><span id="roleTxt"></span><span class="cursor"></span></div>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="grid">
+      <div class="avatar reveal" id="avatar"></div>
+      <div class="reveal">
+        <h2 class="h-sec" id="tAbout"></h2>
+        <p class="bio" id="bio"></p>
+        <div class="stats" id="stats"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="services">
+    <div class="grid">
+      <h2 class="h-sec reveal" id="tServices"></h2>
+      <div id="svcList"></div>
+    </div>
+  </section>
+
+  <section id="exp">
+    <h2 class="h-sec reveal" id="tExp"></h2>
+    <div id="tl" style="margin-top:50px"></div>
+  </section>
+
+  <section id="work">
+    <h2 class="h-sec reveal" id="tWork"></h2>
+    <div class="work" id="workGrid"></div>
+    <div class="cta reveal">
+      <h3 id="tMore"></h3><p id="tMoreSub"></p>
+      <a class="btn" id="moreBtn" target="_blank"></a>
+    </div>
+  </section>
+
+  <section id="proof">
+    <h2 class="h-sec reveal" id="tProof"></h2>
+    <p style="color:var(--muted)" id="tProofSub"></p>
+    <div class="proof" id="proofList"></div>
+  </section>
+
+  <div class="prod reveal">
+    <div class="prod-label mono" id="tProducts"></div>
+    <div class="prod-track" id="prodTrack"></div>
+  </div>
+
+  <section id="videos">
+    <h2 class="h-sec reveal" id="tReel"></h2>
+    <p style="color:var(--muted)" id="tReelSub"></p>
+    <div class="gallery" id="gallery"></div>
+  </section>
+
+  <section id="contact">
+    <div class="big reveal" id="tContact"></div>
+    <p style="color:var(--muted);margin-top:18px" id="tContactSub"></p>
+    <div class="contact-list" id="contactList"></div>
+  </section>
+</main>
+<footer><span id="ftName"></span><span id="ftYear"></span></footer>
+
+<div id="modal"><button class="x" aria-label="Đóng">×</button><video controls playsinline></video></div>
+
+<script>
+let lang = "vi";
+const $ = s => document.querySelector(s);
+const t = o => (o && typeof o === "object" && !Array.isArray(o)) ? (o[lang] ?? o.vi) : o;
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]));
+
+const ICONS = {
+  TikTok:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.8A4.3 4.3 0 0 1 15.5 3h-3.1v12.4a2.6 2.6 0 1 1-2.6-2.6c.3 0 .5 0 .8.1V9.7a5.8 5.8 0 1 0 5 5.7V9.1a7.4 7.4 0 0 0 4.3 1.4V7.4a4.3 4.3 0 0 1-3.3-1.6z"/></svg>',
+  Facebook:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 8V6c0-.9.6-1 1-1h2V2h-3c-3 0-4 2-4 4v2H8v3h2v11h4V11h3l.5-3z"/></svg>',
+  YouTube:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8zM9.7 15.1V8.9l5.8 3.1z"/></svg>',
+  Instagram:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>'
+};
+
+function phone(src, poster, link, label) {
+  const media = src
+    ? `<video src="${esc(src)}" ${poster ? `poster="${esc(poster)}"` : ""} muted loop playsinline preload="metadata"></video>`
+    : poster ? `<img src="${esc(poster)}" alt="">` : `<div class="ph">${UI[lang].noMedia}</div>`;
+  return `<div class="phone" data-src="${esc(src)}" data-link="${esc(link)}">${media}<div class="play">${label}</div></div>`;
+}
+
+function render() {
+  document.documentElement.lang = lang;
+  const U = UI[lang];
+  document.querySelectorAll("header nav a[data-i]").forEach(a => a.textContent = U.nav[a.dataset.i]);
+  document.querySelectorAll(".lg").forEach(s => s.classList.toggle("on", s.dataset.l === lang));
+  $("#hdTag").textContent = CONFIG.brandTag;
+  $("#cvLink").href = CONFIG.cvFile || "#";
+  if (CONFIG.cvFile) $("#cvLink").target = "_blank";
+  $("#hello").textContent = U.hello;
+  $("#name").textContent = t(CONFIG.name);
+  $("#iam").textContent = U.iam;
+
+  $("#tAbout").innerHTML = U.about;
+  $("#avatar").innerHTML = CONFIG.avatar ? `<img src="${esc(CONFIG.avatar)}" alt="" style="object-position:${esc(CONFIG.avatarPos || "center")}">` : `<div class="ph">${U.noAvatar}</div>`;
+  $("#cvLink").style.display = CONFIG.cvFile ? "" : "none";
+  if (CONFIG.heroVideo && !$("#heroVid video"))
+    $("#heroVid").innerHTML = `<video src="${esc(CONFIG.heroVideo)}" poster="${esc(CONFIG.heroPoster || "")}" autoplay muted loop playsinline></video>`;
+  $("#bio").textContent = t(CONFIG.bio);
+  $("#stats").innerHTML = CONFIG.stats.map(s => `<div><b>${esc(t(s.num))}</b><span>${esc(t(s))}</span></div>`).join("");
+
+  $("#tServices").innerHTML = U.services;
+  $("#svcList").innerHTML = CONFIG.services.map((s, i) => `
+    <div class="card reveal ${i === 0 ? "open" : ""}">
+      <h3>${esc(t(s.title))}</h3><div class="sub">${esc(t(s.sub))}</div>
+      <p>${esc(t(s.desc))}</p>
+      <div class="more"><div class="tags-title">${U.tools}</div>
+        <div class="tags">${s.tags.map(x => `<span>${esc(x)}</span>`).join("")}</div></div>
+      <button class="toggle" aria-label="Mở rộng">⌄</button>
+    </div>`).join("");
+
+  $("#tExp").innerHTML = U.exp;
+  $("#tl").innerHTML = CONFIG.experience.map(e => `
+    <div class="tl-row reveal">
+      <div><h4>${esc(t(e.role))}</h4><div class="co">${esc(e.company)}</div></div>
+      <div class="yr ${e.year === "NOW" ? "now" : ""}">${e.year === "NOW" ? U.now : esc(t(e.year))}</div>
+      <p>${esc(t(e.desc))}</p>
+    </div>`).join("");
+
+  $("#tWork").innerHTML = U.work;
+  $("#workGrid").innerHTML = CONFIG.projects.map((p, i) => `
+    <div class="w reveal">
+      <div class="meta"><div class="num">${String(i + 1).padStart(2, "0")}</div>
+        <div class="t">${esc(p.title)}<small>${esc(t(p.type))}</small></div></div>
+      <div class="hl">${U.hl}<small>${esc(p.highlights)}</small></div>
+      ${phone(p.video, p.poster, p.link, U.watch)}
+    </div>`).join("");
+  $("#tMore").textContent = U.more;
+  $("#tMoreSub").textContent = U.moreSub;
+  $("#moreBtn").textContent = U.moreBtn;
+  $("#moreBtn").href = CONFIG.moreLink || "#";
+
+  $("#tProof").innerHTML = U.proof;
+  $("#tProofSub").textContent = U.proofSub;
+  $("#proofList").innerHTML = CONFIG.proof.map(p => `
+    <div class="proof-item reveal"><img src="${esc(p.img)}" alt="" loading="lazy">
+      <div><b>${esc(p.num)}</b><span>${esc(t(p))}</span></div></div>`).join("");
+  $("#tProducts").textContent = U.products;
+  const prods = CONFIG.products.map(p => `<span>${esc(p)}</span><i>●</i>`).join("");
+  $("#prodTrack").innerHTML = prods + prods;
+
+  $("#tReel").innerHTML = U.reel;
+  $("#tReelSub").textContent = U.reelSub;
+  $("#gallery").innerHTML = CONFIG.gallery.map(g => `<img src="${esc(g)}" alt="" loading="lazy">`).join("");
+
+  $("#tContact").textContent = U.contactBig;
+  $("#tContactSub").textContent = U.contactSub;
+  $("#contactList").innerHTML = CONFIG.contact.map(c => `<a href="${esc(c.url)}" target="_blank">${esc(c.label)}</a>`).join("");
+  $("#socials").innerHTML = CONFIG.contact.filter(c => ICONS[c.label])
+    .map(c => `<a href="${esc(c.url)}" target="_blank" title="${esc(c.label)}">${ICONS[c.label]}</a>`).join("");
+  $("#ftName").textContent = t(CONFIG.name);
+  $("#ftYear").textContent = "© " + new Date().getFullYear();
+
+  bindDynamic();
+}
+
+/* Chữ vai trò gõ / xoá lần lượt */
+let roleTimer;
+function typeRoles() {
+  clearTimeout(roleTimer);
+  const list = t(CONFIG.roles), el = $("#roleTxt");
+  let i = 0, j = 0, del = false;
+  (function step() {
+    const w = list[i];
+    el.textContent = w.slice(0, j);
+    if (!del && j < w.length) j++;
+    else if (!del) { del = true; return roleTimer = setTimeout(step, 1600); }
+    else if (j > 0) j--;
+    else { del = false; i = (i + 1) % list.length; }
+    roleTimer = setTimeout(step, del ? 45 : 90);
+  })();
+}
+
+let io;
+function bindDynamic() {
+  io?.disconnect();
+  io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && e.target.classList.add("in")), { threshold: .15 });
+  document.querySelectorAll(".reveal").forEach(el => io.observe(el));
+  document.querySelectorAll(".card .toggle").forEach(b => b.onclick = () => b.parentElement.classList.toggle("open"));
+  document.querySelectorAll(".phone").forEach(p => {
+    const v = p.querySelector("video");
+    if (v) { p.onmouseenter = () => v.play().catch(() => {}); p.onmouseleave = () => v.pause(); }
+    p.onclick = () => {
+      if (p.dataset.link) return window.open(p.dataset.link, "_blank");
+      if (p.dataset.src) openModal(p.dataset.src);
+    };
+  });
+}
+
+function openModal(src) {
+  const m = $("#modal"), v = m.querySelector("video");
+  v.src = src; m.classList.add("on"); v.play().catch(() => {});
+}
+$("#modal .x").onclick = $("#modal").onclick = e => {
+  if (e.target.tagName === "VIDEO") return;
+  const v = $("#modal video"); v.pause(); v.removeAttribute("src"); $("#modal").classList.remove("on");
+};
+
+/* Loader */
+(function loader() {
+  const words = CONFIG.marquee.map(w => `${esc(w)}<span class="dot">●</span>`).join("");
+  $("#marq").innerHTML = words + words + words + words;
+  let k = 0; const tag = CONFIG.brandTag;
+  const ty = setInterval(() => { $("#tagTyping").textContent = tag.slice(0, ++k); if (k >= tag.length) clearInterval(ty); }, 80);
+  let p = 0;
+  const iv = setInterval(() => {
+    p = Math.min(100, p + Math.ceil(Math.random() * 7));
+    $("#pct").textContent = p + "%";
+    if (p >= 100) { clearInterval(iv); $("#langBox").classList.add("show"); }
+  }, 70);
+  document.querySelectorAll("#langBox button").forEach(b => b.onclick = () => {
+    lang = b.dataset.l;
+    $("#langBox").classList.remove("show");
+    $("#pill").innerHTML = `<button id="startBtn">${UI[lang].start}</button>`;
+    $("#pill").style.cursor = "pointer";
+    $("#pill").onclick = () => {
+      $("#loader").classList.add("hide");
+      document.body.classList.remove("locked");
+      render(); typeRoles();
+    };
+  });
+})();
+
+document.querySelectorAll(".lg").forEach(s => s.onclick = () => { lang = s.dataset.l; render(); typeRoles(); });
+render();
+</script>
+</body>
+</html>
