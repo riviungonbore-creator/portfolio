@@ -162,7 +162,13 @@ section{padding:120px 8vw;position:relative}
 .sr-glow{position:absolute;inset:10% 5%;background:radial-gradient(circle,rgba(255,90,95,.45),transparent 65%);filter:blur(50px)}
 .sr-device{position:relative;width:min(320px,70vw);aspect-ratio:9/16;border-radius:34px;padding:10px;background:linear-gradient(160deg,#2a2a2a,#0c0c0c);box-shadow:0 0 0 1px #3a2a2a,0 40px 90px rgba(0,0,0,.6),0 0 60px rgba(255,90,95,.25);transform:rotate(3deg);transition:transform .6s ease}
 .sr-device:hover{transform:rotate(0) scale(1.02)}
-.sr-device video{width:100%;height:100%;object-fit:cover;border-radius:26px;display:block;background:#eee}
+.sr-device{border:0;cursor:pointer;display:block;font:inherit;color:#fff}
+.sr-device img{width:100%;height:100%;object-fit:cover;border-radius:26px;display:block;background:#eee}
+.sr-play{position:absolute;inset:10px;border-radius:26px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:rgba(0,0,0,.28);transition:background .3s}
+.sr-device:hover .sr-play{background:rgba(0,0,0,.12)}
+.sr-play i{width:74px;height:74px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-style:normal;font-size:26px;padding-left:5px;box-shadow:0 0 0 10px rgba(255,90,95,.25),0 10px 30px rgba(0,0,0,.4);animation:pulse 2s ease-in-out infinite}
+.sr-play b{font-size:12px;letter-spacing:.2em;text-transform:uppercase;text-shadow:0 2px 8px rgba(0,0,0,.6)}
+@keyframes pulse{50%{box-shadow:0 0 0 18px rgba(255,90,95,.08),0 10px 30px rgba(0,0,0,.4)}}
 
 /* ---------- Số liệu thật ---------- */
 .proof{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:30px;margin-top:40px;max-width:900px}
@@ -193,8 +199,8 @@ footer{display:flex;justify-content:space-between;padding:30px 8vw;border-top:1p
 /* ---------- Popup xem video ---------- */
 #modal{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:200;display:none;align-items:center;justify-content:center}
 #modal.on{display:flex}
-#modal video{max-height:88vh;max-width:92vw;border-radius:16px;border:2px solid var(--accent)}
-#modal .x{position:absolute;top:20px;right:28px;font-size:30px;cursor:pointer;color:#fff;background:none;border:0}
+#modal video{max-height:92vh;max-width:96vw;border-radius:16px;border:2px solid var(--accent);background:#000}
+#modal .x{position:absolute;top:16px;right:16px;z-index:2;width:44px;height:44px;border-radius:50%;font-size:28px;line-height:1;cursor:pointer;color:#fff;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25)}
 
 @media (max-width:900px){
   header .center{display:none}
@@ -334,14 +340,14 @@ const UI = {
         more:"Muốn xem thêm?", moreSub:"Xem tất cả video trên kênh TikTok", moreBtn:"Xem kênh TikTok →", reel:"Sự kiện & <em>hậu trường</em>",
         reelSub:"Một vài khoảnh khắc khi đi làm nội dung", proof:"Kết quả <em>thật</em>", proofSub:"Ảnh chụp số liệu từ TikTok Studio",
         products:"Sản phẩm đã review", contactBig:"Liên hệ", contactSub:"Hợp tác review, booking hoặc tư vấn kênh — nhắn mình nhé.",
-        noMedia:"Chưa có video<br>bỏ file vào assets/", noAvatar:"Ảnh chân dung<br>assets/avatar.jpg", reelLabel:"Showreel · Brand intro", soundOn:"Bật tiếng", soundOff:"Tắt tiếng", channel:"Xem kênh TikTok" },
+        noMedia:"Chưa có video<br>bỏ file vào assets/", noAvatar:"Ảnh chân dung<br>assets/avatar.jpg", reelLabel:"Showreel · Brand intro", watchVideo:"Xem video", channel:"Xem kênh TikTok" },
   en: { loading:"LOADING", choose:"CHỌN NGÔN NGỮ · CHOOSE LANGUAGE", start:"START", hello:"Hello! I'm", iam:"I'm a",
         nav:["ABOUT","WORK","CV","CONTACT"], about:"About <em>me</em>", services:"What I <em>do</em>", tools:"Skills & tools",
         exp:"Journey &<br><em>experience</em>", now:"PRESENT", work:"My <em>work</em>", hl:"Highlights", watch:"WATCH VIDEO",
         more:"Want to see more?", moreSub:"Watch all my videos on TikTok", moreBtn:"Visit my TikTok →", reel:"Events & <em>behind the scenes</em>",
         reelSub:"A few moments from the field", proof:"Real <em>results</em>", proofSub:"Screenshots from TikTok Studio",
         products:"Products reviewed", contactBig:"Contact me", contactSub:"Reviews, bookings or channel consulting — drop me a message.",
-        noMedia:"No video yet<br>add a file to assets/", noAvatar:"Portrait photo<br>assets/avatar.jpg", reelLabel:"Showreel · Brand intro", soundOn:"Sound on", soundOff:"Sound off", channel:"Visit TikTok" }
+        noMedia:"No video yet<br>add a file to assets/", noAvatar:"Portrait photo<br>assets/avatar.jpg", reelLabel:"Showreel · Brand intro", watchVideo:"Watch video", channel:"Visit TikTok" }
 };
 </script>
 
@@ -389,13 +395,13 @@ const UI = {
         <h2 class="h-sec" id="srTitle"></h2>
         <p id="srDesc"></p>
         <div class="sr-btns">
-          <button class="btn" id="srSound"></button>
+          <button class="btn" id="srWatch"></button>
           <a class="btn ghost" id="srChannel" target="_blank"></a>
         </div>
       </div>
       <div class="sr-phone reveal">
         <div class="sr-glow"></div>
-        <div class="sr-device"><video id="srVideo" muted loop playsinline preload="metadata"></video></div>
+        <button class="sr-device" id="srOpen" aria-label="Xem video"><img id="srPoster" alt=""><span class="sr-play"><i>▶</i><b id="srPlayTxt"></b></span></button>
       </div>
     </div>
   </section>
@@ -499,9 +505,9 @@ function render() {
     $("#srDesc").textContent = t(SR.desc);
     $("#srChannel").textContent = U.channel;
     $("#srChannel").href = CONFIG.moreLink || "#";
-    const v = $("#srVideo");
-    if (!v.getAttribute("src")) { v.src = SR.video; v.poster = SR.poster || ""; }
-    $("#srSound").textContent = v.muted ? "🔊 " + U.soundOn : "🔇 " + U.soundOff;
+    $("#srPoster").src = SR.poster || "";
+    $("#srPlayTxt").textContent = U.watchVideo;
+    $("#srWatch").textContent = "▶  " + U.watchVideo;
   }
 
   $("#tAbout").innerHTML = U.about;
@@ -600,24 +606,16 @@ function bindDynamic() {
   });
 }
 
-/* Showreel: tự chạy khi cuộn tới, nút bật/tắt tiếng */
-(function showreel() {
-  const v = $("#srVideo");
-  new IntersectionObserver(es => es.forEach(e => e.isIntersecting ? v.play().catch(() => {}) : v.pause()), { threshold: .4 }).observe(v);
-  $("#srSound").onclick = () => {
-    v.muted = !v.muted;
-    if (!v.muted) { v.currentTime = 0; v.play().catch(() => {}); }
-    $("#srSound").textContent = v.muted ? "🔊 " + UI[lang].soundOn : "🔇 " + UI[lang].soundOff;
-  };
-})();
+/* Showreel: chỉ phát khi người xem bấm, mở toàn màn hình kèm tiếng */
+$("#srOpen").onclick = $("#srWatch").onclick = () => CONFIG.showreel && openModal(CONFIG.showreel.video);
 
 function openModal(src) {
   const m = $("#modal"), v = m.querySelector("video");
-  v.src = src; m.classList.add("on"); v.play().catch(() => {});
+  v.src = src; v.muted = false; m.classList.add("on"); document.body.classList.add("locked"); v.play().catch(() => {});
 }
 $("#modal .x").onclick = $("#modal").onclick = e => {
   if (e.target.tagName === "VIDEO") return;
-  const v = $("#modal video"); v.pause(); v.removeAttribute("src"); $("#modal").classList.remove("on");
+  const v = $("#modal video"); v.pause(); v.removeAttribute("src"); $("#modal").classList.remove("on"); document.body.classList.remove("locked");
 };
 
 /* Loader */
