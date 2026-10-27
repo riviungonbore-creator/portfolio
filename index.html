@@ -164,11 +164,9 @@ section{padding:120px 8vw;position:relative}
 .sr-device:hover{transform:rotate(0) scale(1.02)}
 .sr-device{border:0;cursor:pointer;display:block;font:inherit;color:#fff}
 .sr-device img{width:100%;height:100%;object-fit:cover;border-radius:26px;display:block;background:#eee}
-.sr-play{position:absolute;inset:10px;border-radius:26px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:rgba(0,0,0,.28);transition:background .3s}
-.sr-device:hover .sr-play{background:rgba(0,0,0,.12)}
-.sr-play i{width:74px;height:74px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-style:normal;font-size:26px;padding-left:5px;box-shadow:0 0 0 10px rgba(255,90,95,.25),0 10px 30px rgba(0,0,0,.4);animation:pulse 2s ease-in-out infinite}
-.sr-play b{font-size:12px;letter-spacing:.2em;text-transform:uppercase;text-shadow:0 2px 8px rgba(0,0,0,.6)}
-@keyframes pulse{50%{box-shadow:0 0 0 18px rgba(255,90,95,.08),0 10px 30px rgba(0,0,0,.4)}}
+.sr-play{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);white-space:nowrap;padding:9px 16px;border-radius:999px;background:rgba(10,10,10,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.18);transition:background .3s}
+.sr-device:hover .sr-play{background:var(--accent)}
+.sr-play b{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:600}
 
 /* ---------- Số liệu thật ---------- */
 .proof{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:30px;margin-top:40px;max-width:900px}
@@ -247,6 +245,7 @@ const CONFIG = {
   // Showreel: video intro thương hiệu (khung dọc 9:16)
   showreel: {
     video: "assets/showreel-riviu-ngon-bo-re.mp4",
+    anim: "assets/showreel-anim.webp",        // ảnh động tự chạy trong khung (như GIF, không tự phóng to)
     poster: "assets/showreel-poster.jpg",
     title: { vi: "Riviu <em>Ngon Bổ Rẻ</em>", en: "Riviu <em>Ngon Bổ Rẻ</em>" },
     desc: { vi: "Intro nhận diện thương hiệu của kênh theo phong cách text match cut: tên kênh xuất hiện liền mạch qua từng trang báo, mở đầu cho mọi video review.",
@@ -340,14 +339,14 @@ const UI = {
         more:"Muốn xem thêm?", moreSub:"Xem tất cả video trên kênh TikTok", moreBtn:"Xem kênh TikTok →", reel:"Sự kiện & <em>hậu trường</em>",
         reelSub:"Một vài khoảnh khắc khi đi làm nội dung", proof:"Kết quả <em>thật</em>", proofSub:"Ảnh chụp số liệu từ TikTok Studio",
         products:"Sản phẩm đã review", contactBig:"Liên hệ", contactSub:"Hợp tác review, booking hoặc tư vấn kênh — nhắn mình nhé.",
-        noMedia:"Chưa có video<br>bỏ file vào assets/", noAvatar:"Ảnh chân dung<br>assets/avatar.jpg", reelLabel:"Showreel · Brand intro", watchVideo:"Xem video", channel:"Xem kênh TikTok" },
+        noMedia:"Chưa có video<br>bỏ file vào assets/", noAvatar:"Ảnh chân dung<br>assets/avatar.jpg", reelLabel:"Showreel · Brand intro", watchVideo:"Xem video", watchSound:"🔊 Bấm để xem có tiếng", channel:"Xem kênh TikTok" },
   en: { loading:"LOADING", choose:"CHỌN NGÔN NGỮ · CHOOSE LANGUAGE", start:"START", hello:"Hello! I'm", iam:"I'm a",
         nav:["ABOUT","WORK","CV","CONTACT"], about:"About <em>me</em>", services:"What I <em>do</em>", tools:"Skills & tools",
         exp:"Journey &<br><em>experience</em>", now:"PRESENT", work:"My <em>work</em>", hl:"Highlights", watch:"WATCH VIDEO",
         more:"Want to see more?", moreSub:"Watch all my videos on TikTok", moreBtn:"Visit my TikTok →", reel:"Events & <em>behind the scenes</em>",
         reelSub:"A few moments from the field", proof:"Real <em>results</em>", proofSub:"Screenshots from TikTok Studio",
         products:"Products reviewed", contactBig:"Contact me", contactSub:"Reviews, bookings or channel consulting — drop me a message.",
-        noMedia:"No video yet<br>add a file to assets/", noAvatar:"Portrait photo<br>assets/avatar.jpg", reelLabel:"Showreel · Brand intro", watchVideo:"Watch video", channel:"Visit TikTok" }
+        noMedia:"No video yet<br>add a file to assets/", noAvatar:"Portrait photo<br>assets/avatar.jpg", reelLabel:"Showreel · Brand intro", watchVideo:"Watch video", watchSound:"🔊 Tap to watch with sound", channel:"Visit TikTok" }
 };
 </script>
 
@@ -401,7 +400,7 @@ const UI = {
       </div>
       <div class="sr-phone reveal">
         <div class="sr-glow"></div>
-        <button class="sr-device" id="srOpen" aria-label="Xem video"><img id="srPoster" alt=""><span class="sr-play"><i>▶</i><b id="srPlayTxt"></b></span></button>
+        <button class="sr-device" id="srOpen" aria-label="Xem video"><img id="srPoster" alt=""><span class="sr-play"><b id="srPlayTxt"></b></span></button>
       </div>
     </div>
   </section>
@@ -505,8 +504,8 @@ function render() {
     $("#srDesc").textContent = t(SR.desc);
     $("#srChannel").textContent = U.channel;
     $("#srChannel").href = CONFIG.moreLink || "#";
-    $("#srPoster").src = SR.poster || "";
-    $("#srPlayTxt").textContent = U.watchVideo;
+    $("#srPoster").src = SR.anim || SR.poster || "";
+    $("#srPlayTxt").textContent = U.watchSound;
     $("#srWatch").textContent = "▶  " + U.watchVideo;
   }
 
